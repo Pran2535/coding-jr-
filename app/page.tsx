@@ -7,7 +7,7 @@ const Home = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [output, setOutput] = useState("Run your code here...");
 
-  const handleLanguageChange = (language: string) => {
+  const handleLanguageChange = (language) => {
     setSelectedLanguage(language);
   };
 
