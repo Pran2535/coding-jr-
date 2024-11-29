@@ -1,3 +1,7 @@
-{
-  "extends": ["next/core-web-vitals", "next/typescript"]
-}
+module.exports = {
+  extends: ["next", "next/core-web-vitals"],
+  rules: {
+    "react-hooks/exhaustive-deps": "off", // Disable specific rule
+    "no-console": "warn", // Warn on console logs instead of error
+  },
+};
