@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Extension } from '@codemirror/state';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
@@ -26,7 +26,7 @@ const lightTheme = EditorView.theme({
   },
 });
 
-const languageExtensions: Record<string, any> = {
+const languageExtensions: Record<string, Extension> = {
   python: python(),
   javascript: javascript(),
   cpp: cpp(),
@@ -50,14 +50,12 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
   const [view, setView] = useState<EditorView | null>(null);
   const [isClient, setIsClient] = useState(false);
 
-  // Initialize the client-side effect
   useEffect(() => {
     setIsClient(true);
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     setIsDarkMode(prefersDarkMode);
   }, []);
 
-  // Effect to set up the CodeMirror editor
   useEffect(() => {
     if (!isClient || !editorRef.current) return;
 
@@ -89,7 +87,6 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
     };
   }, [language, isDarkMode, isClient]);
 
-  // Toggle between dark and light mode
   const toggleTheme = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
@@ -111,7 +108,6 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
     }
   };
 
-  // Run the code
   const runCode = () => {
     try {
       console.clear();
@@ -135,7 +131,6 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
     }
   };
 
-  // Clear the code in the editor
   const clearCode = () => {
     if (view) {
       view.dispatch({
