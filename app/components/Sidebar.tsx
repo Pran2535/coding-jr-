@@ -1,13 +1,8 @@
 'use client';
-import React, { useState } from "react";
+import  { useState } from "react";
 import { 
   Code, FileCode, PenTool, Terminal, Layers, Codepen, Box, Globe, Menu 
 } from "lucide-react";
-
-interface SidebarProps {
-  selectedLanguage: string;
-  onLanguageChange: (language: string) => void;
-}
 
 const languages = [
   { id: "python", name: "Python", icon: <Code size={13} /> },
@@ -20,12 +15,12 @@ const languages = [
   { id: "java", name: "Java", icon: <Globe size={13} /> },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, onLanguageChange }) => {
+const Sidebar = ({ selectedLanguage, onLanguageChange }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const renderLanguageButton = (lang: { id: string, name: string, icon: JSX.Element }) => {
+  const renderLanguageButton = (lang) => {
     const isSelected = selectedLanguage === lang.id;
     return (
       <button
