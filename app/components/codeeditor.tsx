@@ -1,32 +1,32 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { EditorView } from '@codemirror/view';
-import { EditorState, Extension } from '@codemirror/state';
-import { python } from '@codemirror/lang-python';
-import { javascript } from '@codemirror/lang-javascript';
-import { cpp } from '@codemirror/lang-cpp';
-import { rust } from '@codemirror/lang-rust';
-import { go } from '@codemirror/lang-go';
-import { php } from '@codemirror/lang-php';
-import { oneDark } from '@codemirror/theme-one-dark';
-import { keymap } from '@codemirror/view';
-import { autocompletion } from '@codemirror/autocomplete';
+import { useState, useRef, useEffect } from "react";
+import { EditorView } from "@codemirror/view";
+import { EditorState } from "@codemirror/state";
+import { python } from "@codemirror/lang-python";
+import { javascript } from "@codemirror/lang-javascript";
+import { cpp } from "@codemirror/lang-cpp";
+import { rust } from "@codemirror/lang-rust";
+import { go } from "@codemirror/lang-go";
+import { php } from "@codemirror/lang-php";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { keymap } from "@codemirror/view";
+import { autocompletion } from "@codemirror/autocomplete";
 
 const lightTheme = EditorView.theme({
-  '&': {
-    backgroundColor: '#f5f5f5',
-    color: '#000',
+  "&": {
+    backgroundColor: "#f5f5f5",
+    color: "#000",
   },
-  '.cm-content': {
-    caretColor: '#000',
+  ".cm-content": {
+    caretColor: "#000",
   },
-  '.cm-line': {
-    padding: '2px 0',
+  ".cm-line": {
+    padding: "2px 0",
   },
 });
 
-const languageExtensions: Record<string, Extension> = {
+const languageExtensions = {
   python: python(),
   javascript: javascript(),
   cpp: cpp(),
@@ -35,24 +35,19 @@ const languageExtensions: Record<string, Extension> = {
   php: php(),
 };
 
-interface CodeMirrorEditorProps {
-  language: string;
-  onOutputChange?: (output: string) => void;
-}
-
-const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
-  language,
-  onOutputChange,
-}) => {
-  const editorRef = useRef<HTMLDivElement>(null);
+const CodeMirrorEditor = ({ language, onOutputChange }) => {
+  const editorRef = useRef(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [code, setCode] = useState('');
-  const [view, setView] = useState<EditorView | null>(null);
+  const [code, setCode] = useState("");
+  const [view, setView] = useState(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const prefersDarkMode = typeof window !== 'undefined' 
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches 
+      : true;
+    
     setIsDarkMode(prefersDarkMode);
   }, []);
 
@@ -111,22 +106,23 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
   const runCode = () => {
     try {
       console.clear();
-      switch (language) {
-        case 'javascript':
+      
+      switch(language) {
+        case "javascript":
           const result = new Function(`return (${code})`)();
           const resultString = String(result);
           console.log(result);
           onOutputChange?.(resultString);
           break;
-        case 'python':
-          onOutputChange?.('Python execution requires a backend service');
+        case "python":
+          onOutputChange?.("Python execution requires a backend service");
           break;
         default:
           onOutputChange?.(`Execution for ${language} not supported`);
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('Error during code execution:', error);
+      console.error("Error during code execution:", error);
       onOutputChange?.(errorMessage);
     }
   };
@@ -134,31 +130,29 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
   const clearCode = () => {
     if (view) {
       view.dispatch({
-        changes: { from: 0, to: view.state.doc.length, insert: '' },
+        changes: { from: 0, to: view.state.doc.length, insert: "" }
       });
-      setCode('');
-      onOutputChange?.('');
+      setCode("");
+      onOutputChange?.("");
     }
   };
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100%' }}>
       {/* Button Bar */}
-      <div
-        style={{
-          position: 'fixed',
-          top: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: '10px',
-          zIndex: 1000,
-        }}
-      >
-        <button
-          onClick={toggleTheme}
+      <div style={{
+        position: 'fixed',
+        top: '10px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        gap: '10px',
+        zIndex: '1000',
+      }}>
+        <button 
+          onClick={toggleTheme} 
           style={{
-            backgroundColor: isDarkMode ? 'white' : 'black',
+            backgroundColor: isDarkMode ? 'white' : 'black', 
             color: isDarkMode ? 'black' : 'white',
             padding: '8px 16px',
             borderRadius: '5px',
@@ -167,11 +161,11 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
         >
           Toggle Theme
         </button>
-
-        <button
-          onClick={runCode}
+        
+        <button 
+          onClick={runCode} 
           style={{
-            backgroundColor: 'green',
+            backgroundColor: 'green', 
             color: 'white',
             padding: '8px 16px',
             borderRadius: '5px',
@@ -181,10 +175,10 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
           Run
         </button>
 
-        <button
-          onClick={clearCode}
+        <button 
+          onClick={clearCode} 
           style={{
-            backgroundColor: 'red',
+            backgroundColor: 'red', 
             color: 'white',
             padding: '8px 16px',
             borderRadius: '5px',
@@ -194,21 +188,21 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
           Clear
         </button>
       </div>
-
+      
       {/* Editor View */}
-      <div
-        ref={editorRef}
-        style={{
-          height: 'calc(100vh - 50px)',
-          width: '100%',
-          border: '1px solid #ccc',
+      <div 
+        ref={editorRef} 
+        style={{ 
+          height: "calc(100vh - 50px)",
+          width: "100%", 
+          border: "1px solid #ccc", 
           marginTop: '50px',
           backgroundColor: isDarkMode ? '#181818' : '#f5f5f5',
           color: isDarkMode ? '#fff' : '#000',
           overflowY: 'auto',
           padding: '10px',
           borderRadius: '5px',
-        }}
+        }} 
       />
     </div>
   );
